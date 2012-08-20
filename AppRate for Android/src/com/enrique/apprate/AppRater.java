@@ -17,10 +17,10 @@ import android.widget.TextView;
 
 public class AppRater {
 
-	private static final String SHARED_PREFS_NAME = "apprate";
+	private static final String SHARED_PREFS_NAME = "apprate_prefs";
 	private static final String PREF_DATE_FIRST_LAUNCH = "date_firstlaunch";
 	private static final String PREF_LAUNCH_COUNT = "launch_count";
-	private static final String PREF_DONT_SHOW_AGAIN = "dontshowagain";
+	private static final String PREF_DONT_SHOW_AGAIN = "dont_show_again";
 
 	public static void init(Context context, long minLaunchesUntilPrompt, int minDaysUntilPrompt) {
 
