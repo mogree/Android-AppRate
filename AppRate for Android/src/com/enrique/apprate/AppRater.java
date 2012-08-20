@@ -52,33 +52,33 @@ public class AppRater {
 		editor.commit();
 	}
 
-	private static void showRateDialog(final Context mContext, final SharedPreferences.Editor editor) {
+	private static void showRateDialog(final Context context, final SharedPreferences.Editor editor) {
 
-		final Dialog dialog = new Dialog(mContext);
-		dialog.setTitle("Rate " + getApplicationName(mContext));
+		final Dialog dialog = new Dialog(context);
+		dialog.setTitle("Rate " + getApplicationName(context));
 
-		LinearLayout linearLayout = new LinearLayout(mContext);
+		LinearLayout linearLayout = new LinearLayout(context);
 		linearLayout.setOrientation(LinearLayout.VERTICAL);
 
-		TextView textView = new TextView(mContext);
-		textView.setText("If you enjoy using " + getApplicationName(mContext)
+		TextView textView = new TextView(context);
+		textView.setText("If you enjoy using " + getApplicationName(context)
 				+ ", please take a moment to rate it. Thanks for your support!");
 		textView.setWidth(240);
 		textView.setPadding(4, 0, 4, 10);
 		linearLayout.addView(textView);
 
-		Button rateButton = new Button(mContext);
+		Button rateButton = new Button(context);
 		rateButton.setText("Rate it!");
 		rateButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri
-						.parse("market://details?id=" + mContext.getPackageName())));
+				context.startActivity(new Intent(Intent.ACTION_VIEW, Uri
+						.parse("market://details?id=" + context.getPackageName())));
 				dialog.dismiss();
 			}
 		});
 		linearLayout.addView(rateButton);
 
-		Button remindButton = new Button(mContext);
+		Button remindButton = new Button(context);
 		remindButton.setText("Remind me later");
 		remindButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
@@ -87,7 +87,7 @@ public class AppRater {
 		});
 		linearLayout.addView(remindButton);
 
-		Button neverButton = new Button(mContext);
+		Button neverButton = new Button(context);
 		neverButton.setText("No, thanks");
 		neverButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
