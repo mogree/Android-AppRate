@@ -1,20 +1,23 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <TextView
-        android:id="@+id/lunch_number"
+    <Button
+        android:id="@+id/reset_apprate_prefs"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true" />
+        android:layout_centerVertical="true"
+        android:text="Reset AppRate Preferences" />
 
     <Button
-        android:id="@+id/reset_lunch_number"
+        android:id="@+id/restart_activity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/lunch_number"
-        android:text="Reset" />
-
-
+        android:layout_below="@id/reset_apprate_prefs"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="Restart Application" />
 
 </RelativeLayout>
