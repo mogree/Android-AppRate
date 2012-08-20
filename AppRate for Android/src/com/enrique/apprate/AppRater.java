@@ -41,7 +41,7 @@ public class AppRater implements android.content.DialogInterface.OnClickListener
 		message = "If you enjoy using " + getApplicationName(hostActivity.getApplicationContext()) + ", please take a moment to rate it. Thanks for your support!";
 		rate = "Rate it !";
 		remindLater = "Remind me later";
-		dismiss = "No thanks.";
+		dismiss = "No thanks";
 	}
 
 	/**
@@ -116,8 +116,7 @@ public class AppRater implements android.content.DialogInterface.OnClickListener
 	 * Reset all the data collected about number of launches and days until first launch.
 	 */
 	public static void reset(Context context) {
-		SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFS_NAME, 0);
-		prefs.edit().clear().commit();
+		context.getSharedPreferences(SHARED_PREFS_NAME, 0).edit().clear().commit();
 	}
 
 	/**
