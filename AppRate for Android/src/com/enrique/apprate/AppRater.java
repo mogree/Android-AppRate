@@ -23,9 +23,9 @@ public class AppRater {
 	private final static int DAYS_UNTIL_PROMPT = 3;
 	private final static int LAUNCHES_UNTIL_PROMPT = 7;
 
-	public static void init(Context mContext) {
+	public static void init(Context context) {
 
-		SharedPreferences prefs = mContext.getSharedPreferences("apprater", 0);
+		SharedPreferences prefs = context.getSharedPreferences("apprater", 0);
 		if (prefs.getBoolean(PREF_DONT_SHOW_AGAIN, false)) {
 			return;
 		}
@@ -47,14 +47,14 @@ public class AppRater {
 		if (launch_count >= LAUNCHES_UNTIL_PROMPT) {
 			if (System.currentTimeMillis() >= date_firstLaunch
 					+ (DAYS_UNTIL_PROMPT * 24 * 60 * 60 * 1000)) {
-				showRateDialog(mContext, editor);
+				showRateDialog(context, editor);
 			}
 		}
 
 		editor.commit();
 	}
 
-	public static void showRateDialog(final Context mContext,
+	private static void showRateDialog(final Context mContext,
 			final SharedPreferences.Editor editor) {
 		final Dialog dialog = new Dialog(mContext);
 		dialog.setTitle("Rate " + APP_TITLE);
