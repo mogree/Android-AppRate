@@ -22,7 +22,7 @@ public class AppRater {
 	private static final String PREF_LAUNCH_COUNT = "launch_count";
 	private static final String PREF_DONT_SHOW_AGAIN = "dontshowagain";
 
-	public static void init(Context context, long launchesUntilPrompt, int daysUntilPrompt) {
+	public static void init(Context context, long minLaunchesUntilPrompt, int minDaysUntilPrompt) {
 
 		SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFS_NAME, 0);
 		if (prefs.getBoolean(PREF_DONT_SHOW_AGAIN, false)) {
@@ -43,8 +43,8 @@ public class AppRater {
 		}
 
 		// Wait at least n days before opening
-		if (launch_count >= launchesUntilPrompt) {
-			if (System.currentTimeMillis() >= date_firstLaunch + (daysUntilPrompt * DateUtils.DAY_IN_MILLIS)) {
+		if (launch_count >= minLaunchesUntilPrompt) {
+			if (System.currentTimeMillis() >= date_firstLaunch + (minDaysUntilPrompt * DateUtils.DAY_IN_MILLIS)) {
 				showRateDialog(context, editor);
 			}
 		}
