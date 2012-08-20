@@ -71,8 +71,11 @@ public class AppRater {
 		rateButton.setText("Rate it!");
 		rateButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				context.startActivity(new Intent(Intent.ACTION_VIEW, Uri
-						.parse("market://details?id=" + context.getPackageName())));
+				context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + context.getPackageName())));
+				if (editor != null) {
+					editor.putLong(PREF_DATE_FIRST_LAUNCH, System.currentTimeMillis());
+					editor.commit();
+				}
 				dialog.dismiss();
 			}
 		});
