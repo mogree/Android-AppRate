@@ -52,43 +52,43 @@ public class AppRater {
 	}
 
 	private static void showRateDialog(final Context mContext, final SharedPreferences.Editor editor) {
-		
+
 		final Dialog dialog = new Dialog(mContext);
 		dialog.setTitle("Rate " + APP_TITLE);
 
-		LinearLayout ll = new LinearLayout(mContext);
-		ll.setOrientation(LinearLayout.VERTICAL);
+		LinearLayout linearLayout = new LinearLayout(mContext);
+		linearLayout.setOrientation(LinearLayout.VERTICAL);
 
-		TextView tv = new TextView(mContext);
-		tv.setText("If you enjoy using " + APP_TITLE
+		TextView textView = new TextView(mContext);
+		textView.setText("If you enjoy using " + APP_TITLE
 				+ ", please take a moment to rate it. Thanks for your support!");
-		tv.setWidth(240);
-		tv.setPadding(4, 0, 4, 10);
-		ll.addView(tv);
+		textView.setWidth(240);
+		textView.setPadding(4, 0, 4, 10);
+		linearLayout.addView(textView);
 
-		Button b1 = new Button(mContext);
-		b1.setText("Rate " + APP_TITLE);
-		b1.setOnClickListener(new OnClickListener() {
+		Button rateButton = new Button(mContext);
+		rateButton.setText("Rate " + APP_TITLE);
+		rateButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri
 						.parse("market://details?id=" + APP_PNAME)));
 				dialog.dismiss();
 			}
 		});
-		ll.addView(b1);
+		linearLayout.addView(rateButton);
 
-		Button b2 = new Button(mContext);
-		b2.setText("Remind me later");
-		b2.setOnClickListener(new OnClickListener() {
+		Button remindButton = new Button(mContext);
+		remindButton.setText("Remind me later");
+		remindButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				dialog.dismiss();
 			}
 		});
-		ll.addView(b2);
+		linearLayout.addView(remindButton);
 
-		Button b3 = new Button(mContext);
-		b3.setText("No, thanks");
-		b3.setOnClickListener(new OnClickListener() {
+		Button neverButton = new Button(mContext);
+		neverButton.setText("No, thanks");
+		neverButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				if (editor != null) {
 					editor.putBoolean(PREF_DONT_SHOW_AGAIN, true);
@@ -97,9 +97,9 @@ public class AppRater {
 				dialog.dismiss();
 			}
 		});
-		ll.addView(b3);
+		linearLayout.addView(neverButton);
 
-		dialog.setContentView(ll);
+		dialog.setContentView(linearLayout);
 		dialog.show();
 	}
 }
