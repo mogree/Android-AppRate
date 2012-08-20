@@ -4,6 +4,9 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.text.format.DateUtils;
 import android.view.View;
@@ -14,16 +17,14 @@ import android.widget.TextView;
 
 public class AppRater {
 
+	private static final String SHARED_PREFS_NAME = "apprate";
 	private static final String PREF_DATE_FIRST_LAUNCH = "date_firstlaunch";
 	private static final String PREF_LAUNCH_COUNT = "launch_count";
 	private static final String PREF_DONT_SHOW_AGAIN = "dontshowagain";
 
-	private final static String APP_TITLE = "YOUR-APP-NAME";
-	private final static String APP_PNAME = "YOUR-PACKAGE-NAME";
-
 	public static void init(Context context, long launchesUntilPrompt, int daysUntilPrompt) {
 
-		SharedPreferences prefs = context.getSharedPreferences("apprater", 0);
+		SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFS_NAME, 0);
 		if (prefs.getBoolean(PREF_DONT_SHOW_AGAIN, false)) {
 			return;
 		}
@@ -54,24 +55,24 @@ public class AppRater {
 	private static void showRateDialog(final Context mContext, final SharedPreferences.Editor editor) {
 
 		final Dialog dialog = new Dialog(mContext);
-		dialog.setTitle("Rate " + APP_TITLE);
+		dialog.setTitle("Rate " + getApplicationName(mContext));
 
 		LinearLayout linearLayout = new LinearLayout(mContext);
 		linearLayout.setOrientation(LinearLayout.VERTICAL);
 
 		TextView textView = new TextView(mContext);
-		textView.setText("If you enjoy using " + APP_TITLE
+		textView.setText("If you enjoy using " + getApplicationName(mContext)
 				+ ", please take a moment to rate it. Thanks for your support!");
 		textView.setWidth(240);
 		textView.setPadding(4, 0, 4, 10);
 		linearLayout.addView(textView);
 
 		Button rateButton = new Button(mContext);
-		rateButton.setText("Rate " + APP_TITLE);
+		rateButton.setText("Rate it!");
 		rateButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri
-						.parse("market://details?id=" + APP_PNAME)));
+						.parse("market://details?id=" + mContext.getPackageName())));
 				dialog.dismiss();
 			}
 		});
@@ -101,5 +102,20 @@ public class AppRater {
 
 		dialog.setContentView(linearLayout);
 		dialog.show();
+	}
+
+	/**
+	 * @param context A context of the current application.
+	 * @return The application name of the current application.
+	 */
+	private static final String getApplicationName(Context context) {
+		final PackageManager packageManager = context.getPackageManager();
+		ApplicationInfo applicationInfo;
+		try {
+			applicationInfo = packageManager.getApplicationInfo(context.getPackageName(), 0);
+		} catch (final NameNotFoundException e) {
+			applicationInfo = null;
+		}
+		return (String) (applicationInfo != null ? packageManager.getApplicationLabel(applicationInfo) : "(unknown)");
 	}
 }
