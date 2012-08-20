@@ -49,8 +49,57 @@ public class AppRater {
 	}
 
 	/**
+	 * @param The title of the dialog to show.<br/>
+	 *            Default is build from the computed application name.
+	 * @return This {@link AppRater} object to allow chaining.
+	 */
+	public AppRater setTitle(String title) {
+		this.title = title;
+		return this;
+	}
+
+	/**
+	 * @param The message of the dialog to show.<br/>
+	 *            Default is build from the computed application name and looks like : <br/>
+	 *            If you enjoy using YOUR_APP_NAME, please take a moment to rate it. Thanks for your support!
+	 * @return This {@link AppRater} object to allow chaining.
+	 */
+	public AppRater setMessage(String message) {
+		this.message = message;
+		return this;
+	}
+
+	/**
+	 * @param rate A custom text for the rate button.
+	 * @return This {@link AppRater} object to allow chaining.
+	 */
+	public AppRater setRateButtonText(String rate) {
+		this.rate = rate;
+		return this;
+	}
+
+	/**
+	 * @param remindLater A custom text for the remind later button.
+	 * @return This {@link AppRater} object to allow chaining.
+	 */
+	public AppRater setRemindLaterButtonText(String remindLater) {
+		this.remindLater = remindLater;
+		return this;
+	}
+
+	/**
+	 * @param dismiss A custom text for the dismiss button.
+	 * @return This {@link AppRater} object to allow chaining.
+	 */
+	public AppRater setDismissButtonText(String dismiss) {
+		this.dismiss = dismiss;
+		return this;
+	}
+
+	/**
 	 * @param minLaunchesUntilPrompt The minimum number of days before showing the rate dialog.<br/>
 	 *            Default value is 7 days.
+	 * @return This {@link AppRater} object to allow chaining.
 	 */
 	public AppRater setMinLaunchesUntilPrompt(long minLaunchesUntilPrompt) {
 		this.minLaunchesUntilPrompt = minLaunchesUntilPrompt;
@@ -60,6 +109,7 @@ public class AppRater {
 	/**
 	 * @param minDaysUntilPrompt The minimum number of times the user lunches the application before showing the rate dialog.<br/>
 	 *            Default value is 10 times.
+	 * @return This {@link AppRater} object to allow chaining.
 	 */
 	public AppRater setMinDaysUntilPrompt(long minDaysUntilPrompt) {
 		this.minDaysUntilPrompt = minDaysUntilPrompt;
