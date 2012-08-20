@@ -12,7 +12,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class AppRater {
-    private final static String APP_TITLE = "YOUR-APP-NAME";
+	
+    private static final String PREF_DATE_FIRST_LAUNCH = "date_firstlaunch";
+	private static final String PREF_LAUNCH_COUNT = "launch_count";
+	private static final String PREF_DONT_SHOW_AGAIN = "dontshowagain";
+    
+	private final static String APP_TITLE = "YOUR-APP-NAME";
     private final static String APP_PNAME = "YOUR-PACKAGE-NAME";
     
     private final static int DAYS_UNTIL_PROMPT = 3;
@@ -20,19 +25,19 @@ public class AppRater {
     
     public static void init(Context mContext) {
         SharedPreferences prefs = mContext.getSharedPreferences("apprater", 0);
-        if (prefs.getBoolean("dontshowagain", false)) { return ; }
+        if (prefs.getBoolean(PREF_DONT_SHOW_AGAIN, false)) { return ; }
         
         SharedPreferences.Editor editor = prefs.edit();
         
         // Increment launch counter
-        long launch_count = prefs.getLong("launch_count", 0) + 1;
-        editor.putLong("launch_count", launch_count);
+        long launch_count = prefs.getLong(PREF_LAUNCH_COUNT, 0) + 1;
+        editor.putLong(PREF_LAUNCH_COUNT, launch_count);
 
         // Get date of first launch
-        Long date_firstLaunch = prefs.getLong("date_firstlaunch", 0);
+        Long date_firstLaunch = prefs.getLong(PREF_DATE_FIRST_LAUNCH, 0);
         if (date_firstLaunch == 0) {
             date_firstLaunch = System.currentTimeMillis();
-            editor.putLong("date_firstlaunch", date_firstLaunch);
+            editor.putLong(PREF_DATE_FIRST_LAUNCH, date_firstLaunch);
         }
         
         // Wait at least n days before opening
@@ -83,7 +88,7 @@ public class AppRater {
         b3.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 if (editor != null) {
-                    editor.putBoolean("dontshowagain", true);
+                    editor.putBoolean(PREF_DONT_SHOW_AGAIN, true);
                     editor.commit();
                 }
                 dialog.dismiss();
