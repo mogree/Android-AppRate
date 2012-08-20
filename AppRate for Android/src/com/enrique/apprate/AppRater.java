@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.text.format.DateUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -20,10 +21,7 @@ public class AppRater {
 	private final static String APP_TITLE = "YOUR-APP-NAME";
 	private final static String APP_PNAME = "YOUR-PACKAGE-NAME";
 
-	private final static int DAYS_UNTIL_PROMPT = 3;
-	private final static int LAUNCHES_UNTIL_PROMPT = 7;
-
-	public static void init(Context context) {
+	public static void init(Context context, long launchesUntilPrompt, int daysUntilPrompt) {
 
 		SharedPreferences prefs = context.getSharedPreferences("apprater", 0);
 		if (prefs.getBoolean(PREF_DONT_SHOW_AGAIN, false)) {
@@ -44,9 +42,8 @@ public class AppRater {
 		}
 
 		// Wait at least n days before opening
-		if (launch_count >= LAUNCHES_UNTIL_PROMPT) {
-			if (System.currentTimeMillis() >= date_firstLaunch
-					+ (DAYS_UNTIL_PROMPT * 24 * 60 * 60 * 1000)) {
+		if (launch_count >= launchesUntilPrompt) {
+			if (System.currentTimeMillis() >= date_firstLaunch + (daysUntilPrompt * DateUtils.DAY_IN_MILLIS)) {
 				showRateDialog(context, editor);
 			}
 		}
@@ -54,8 +51,8 @@ public class AppRater {
 		editor.commit();
 	}
 
-	private static void showRateDialog(final Context mContext,
-			final SharedPreferences.Editor editor) {
+	private static void showRateDialog(final Context mContext, final SharedPreferences.Editor editor) {
+		
 		final Dialog dialog = new Dialog(mContext);
 		dialog.setTitle("Rate " + APP_TITLE);
 
