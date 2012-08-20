@@ -1,8 +1,9 @@
 package com.enrique.apprate;
 
 import android.app.Activity;
-import android.app.Dialog;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -11,13 +12,8 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.text.format.DateUtils;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
-public class AppRater {
+public class AppRater implements android.content.DialogInterface.OnClickListener {
 
 	private static final String SHARED_PREFS_NAME = "apprate_prefs";
 
@@ -123,13 +119,13 @@ public class AppRater {
 			return;
 		}
 
-		SharedPreferences.Editor editor = preferences.edit();
+		Editor editor = preferences.edit();
 
-		// Increment launch counter
+		// Get and increment launch counter.
 		long launch_count = preferences.getLong(PREF_LAUNCH_COUNT, 0) + 1;
 		editor.putLong(PREF_LAUNCH_COUNT, launch_count);
 
-		// Get date of first launch
+		// Get date of first launch.
 		Long date_firstLaunch = preferences.getLong(PREF_DATE_FIRST_LAUNCH, 0);
 		if (date_firstLaunch == 0) {
 			date_firstLaunch = System.currentTimeMillis();
@@ -139,67 +135,46 @@ public class AppRater {
 		// Show the rate dialog if needed.
 		if (launch_count >= minLaunchesUntilPrompt) {
 			if (System.currentTimeMillis() >= date_firstLaunch + (minDaysUntilPrompt * DateUtils.DAY_IN_MILLIS)) {
-				showRateDialog();
+				new AlertDialog.Builder(hostActivity)
+						.setTitle(title)
+						.setMessage(message)
+						.setPositiveButton(rate, this)
+						.setNegativeButton(dismiss, this)
+						.setNeutralButton(remindLater, this)
+						.create()
+						.show();
 			}
 		}
 
 		editor.commit();
 	}
 
-	private void showRateDialog() {
+	@Override
+	public void onClick(DialogInterface dialog, int which) {
 
-		final Dialog dialog = new Dialog(hostActivity);
-		dialog.setTitle(title);
+		Editor editor = preferences.edit();
 
-		LinearLayout linearLayout = new LinearLayout(hostActivity);
-		linearLayout.setOrientation(LinearLayout.VERTICAL);
+		switch (which) {
+		case DialogInterface.BUTTON_POSITIVE:
+			hostActivity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + hostActivity.getPackageName())));
+			editor.putBoolean(PREF_DONT_SHOW_AGAIN, true);
+			break;
 
-		TextView textView = new TextView(hostActivity);
-		textView.setText(message);
-		textView.setWidth(240);
-		textView.setPadding(4, 0, 4, 10);
-		linearLayout.addView(textView);
+		case DialogInterface.BUTTON_NEGATIVE:
+			editor.putBoolean(PREF_DONT_SHOW_AGAIN, true);
+			break;
 
-		Button rateButton = new Button(hostActivity);
-		rateButton.setText(rate);
-		rateButton.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				hostActivity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + hostActivity.getPackageName())));
-				Editor editor = preferences.edit();
-				if (editor != null) {
-					editor.putLong(PREF_DATE_FIRST_LAUNCH, System.currentTimeMillis());
-					editor.commit();
-				}
-				dialog.dismiss();
-			}
-		});
-		linearLayout.addView(rateButton);
+		case DialogInterface.BUTTON_NEUTRAL:
+			editor.putLong(PREF_DATE_FIRST_LAUNCH, System.currentTimeMillis());
+			editor.putLong(PREF_LAUNCH_COUNT, 0);
+			break;
 
-		Button remindButton = new Button(hostActivity);
-		remindButton.setText(remindLater);
-		remindButton.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				dialog.dismiss();
-			}
-		});
-		linearLayout.addView(remindButton);
+		default:
+			break;
+		}
 
-		Button neverButton = new Button(hostActivity);
-		neverButton.setText(dismiss);
-		neverButton.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				Editor editor = preferences.edit();
-				if (editor != null) {
-					editor.putBoolean(PREF_DONT_SHOW_AGAIN, true);
-					editor.commit();
-				}
-				dialog.dismiss();
-			}
-		});
-		linearLayout.addView(neverButton);
-
-		dialog.setContentView(linearLayout);
-		dialog.show();
+		editor.commit();
+		dialog.dismiss();
 	}
 
 	/**
