@@ -112,6 +112,17 @@ public class AppRater implements android.content.DialogInterface.OnClickListener
 		return this;
 	}
 
+	/**
+	 * Reset all the data collected about number of launches and days until first launch.
+	 */
+	public static void reset(Context context) {
+		SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFS_NAME, 0);
+		prefs.edit().clear().commit();
+	}
+
+	/**
+	 * Display the rate dialog if needed.
+	 */
 	public void init() {
 
 		preferences = hostActivity.getSharedPreferences(SHARED_PREFS_NAME, 0);
