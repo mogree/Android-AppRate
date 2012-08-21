@@ -7,7 +7,9 @@ A customizable dialog with "rate", "remind later" and "reject" buttons is displa
 How to install/use
 ------------------
 
-1. Copy the AppRate_0.5.jar into your "libs" folder.
+1. Put in your "libs" folder the AppRate jar. (You can find it on the [download] page.)
+
+[download]: https://github.com/TimotheeJeannin/AppRate/downloads
 
 2. Use AppRate as follows in your MAIN activity: 
 
