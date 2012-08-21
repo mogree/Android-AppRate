@@ -13,8 +13,9 @@ How to install/use
 [jar]: https://github.com/TimotheeJeannin/AppRate/downloads
 
 2. Use AppRate as follows in your MAIN activity: 
-
-	new AppRater(this)
-		.setMinDaysUntilPrompt(7)
-		.setMinLaunchesUntilPrompt(20)
-		.init();
+```java
+new AppRater(this)
+    .setMinDaysUntilPrompt(7)
+    .setMinLaunchesUntilPrompt(20)
+    .init();
+```
