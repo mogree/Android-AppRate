@@ -16,6 +16,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
 		setContentView(R.layout.activity_main);
 		findViewById(R.id.restart_activity).setOnClickListener(this);
+		findViewById(R.id.reset_apprate_prefs).setOnClickListener(this);
 
 		// Init AppRater.
 		new AppRater(this)

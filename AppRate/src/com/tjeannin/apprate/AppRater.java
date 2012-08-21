@@ -12,8 +12,11 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.text.format.DateUtils;
+import android.util.Log;
 
 public class AppRater implements android.content.DialogInterface.OnClickListener {
+
+	private static final String TAG = "AppRater";
 
 	private static final String SHARED_PREFS_NAME = "apprate_prefs";
 
@@ -35,7 +38,9 @@ public class AppRater implements android.content.DialogInterface.OnClickListener
 	private SharedPreferences preferences;
 
 	public AppRater(Activity hostActivity) {
+		
 		this.hostActivity = hostActivity;
+		preferences = hostActivity.getSharedPreferences(SHARED_PREFS_NAME, 0);
 
 		title = "Rate " + getApplicationName(hostActivity.getApplicationContext());
 		message = "If you enjoy using " + getApplicationName(hostActivity.getApplicationContext()) + ", please take a moment to rate it. Thanks for your support!";
@@ -114,9 +119,11 @@ public class AppRater implements android.content.DialogInterface.OnClickListener
 
 	/**
 	 * Reset all the data collected about number of launches and days until first launch.
+	 * @param A context.
 	 */
 	public static void reset(Context context) {
 		context.getSharedPreferences(SHARED_PREFS_NAME, 0).edit().clear().commit();
+		Log.d(TAG, "Cleared AppRate shared preferences.");
 	}
 
 	/**
@@ -124,7 +131,8 @@ public class AppRater implements android.content.DialogInterface.OnClickListener
 	 */
 	public void init() {
 
-		preferences = hostActivity.getSharedPreferences(SHARED_PREFS_NAME, 0);
+		Log.d(TAG, "Init AppRate");
+		
 		if (preferences.getBoolean(PREF_DONT_SHOW_AGAIN, false)) {
 			return;
 		}
