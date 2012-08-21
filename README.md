@@ -1,9 +1,9 @@
 AppRate
 =======
 
-AppRate allows your users to rate your application in a non intrusive way. 
+* AppRate allows your users to rate your application in a non intrusive way.
 
-AppRate shows a customizable rate dialog according to your chosen settings.
+* AppRate shows a customizable rate dialog according to your chosen settings.
 
 How to install/use
 ------------------
