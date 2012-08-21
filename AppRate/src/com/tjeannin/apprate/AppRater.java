@@ -1,4 +1,4 @@
-package com.enrique.apprate;
+package com.tjeannin.apprate;
 
 import android.app.Activity;
 import android.app.AlertDialog;

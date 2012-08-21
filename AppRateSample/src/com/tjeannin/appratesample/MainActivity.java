@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-import com.enrique.apprate.AppRater;
+import com.tjeannin.apprate.AppRater;
 
 public class MainActivity extends Activity implements OnClickListener {
 
