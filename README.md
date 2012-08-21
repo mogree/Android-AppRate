@@ -5,8 +5,8 @@ AppRate
 
 * AppRate shows a customizable rate dialog according to your chosen settings.
 
-How to install/use
-------------------
+How to install and use
+----------------------
 
 1. Put the AppRate [jar] in your `libs` folder.
 
