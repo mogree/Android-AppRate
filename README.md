@@ -8,7 +8,7 @@ AppRate
 How to install/use
 ------------------
 
-1. Put in your `libs` folder the AppRate [jar].
+1. Put the AppRate [jar] in your `libs` folder.
 
 [jar]: https://github.com/TimotheeJeannin/AppRate/downloads
 
