@@ -13,9 +13,37 @@ How to install and use
 [jar]: https://github.com/TimotheeJeannin/AppRate/downloads
 
 2. Use AppRate as follows in your `MAIN` activity: 
+
 ```java
-new AppRater(this)
+new AppRate(this).init();
+```
+
+Features
+--------
+
+* You can decide not to prompt the user if the application has crashed once.
+
+```java
+new AppRate(this)
+    .setShowIfAppHasCrashed(false)
+    .init();
+```
+
+* You can decide when to prompt the user.
+
+```java
+new AppRate(this)
     .setMinDaysUntilPrompt(7)
     .setMinLaunchesUntilPrompt(20)
+    .init();
+```
+
+* You can customize all the messages and buttons of the rate dialog.
+
+```java
+new AppRate(this)
+    .setMessage("My custom message")
+    .setRateButtonText("My custom rate button text")
+    .setDismissButtonText(R.id.my_string)
     .init();
 ```
