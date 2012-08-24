@@ -1,4 +1,4 @@
-package com.tjeannin.appratesample;
+package com.tjeannin.apprate.sample;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -10,6 +10,7 @@ import android.view.View.OnClickListener;
 import android.widget.TextView;
 
 import com.tjeannin.apprate.AppRate;
+import com.tjeannin.apprate.sample.R;
 
 public class MainActivity extends Activity implements OnClickListener {
 
