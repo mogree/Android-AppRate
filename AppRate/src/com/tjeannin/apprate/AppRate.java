@@ -14,7 +14,7 @@ import android.net.Uri;
 import android.text.format.DateUtils;
 import android.util.Log;
 
-public class AppRater implements android.content.DialogInterface.OnClickListener {
+public class AppRate implements android.content.DialogInterface.OnClickListener {
 
 	private static final String TAG = "AppRater";
 
@@ -31,7 +31,7 @@ public class AppRater implements android.content.DialogInterface.OnClickListener
 
 	private SharedPreferences preferences;
 
-	public AppRater(Activity hostActivity) {
+	public AppRate(Activity hostActivity) {
 
 		this.hostActivity = hostActivity;
 		preferences = hostActivity.getSharedPreferences(PrefsContract.SHARED_PREFS_NAME, 0);
@@ -46,9 +46,9 @@ public class AppRater implements android.content.DialogInterface.OnClickListener
 	/**
 	 * @param The title of the dialog to show.<br/>
 	 *            Default is build from the computed application name.
-	 * @return This {@link AppRater} object to allow chaining.
+	 * @return This {@link AppRate} object to allow chaining.
 	 */
-	public AppRater setTitle(String title) {
+	public AppRate setTitle(String title) {
 		this.title = title;
 		return this;
 	}
@@ -57,36 +57,36 @@ public class AppRater implements android.content.DialogInterface.OnClickListener
 	 * @param The message of the dialog to show.<br/>
 	 *            Default is build from the computed application name and looks like : <br/>
 	 *            If you enjoy using YOUR_APP_NAME, please take a moment to rate it. Thanks for your support!
-	 * @return This {@link AppRater} object to allow chaining.
+	 * @return This {@link AppRate} object to allow chaining.
 	 */
-	public AppRater setMessage(String message) {
+	public AppRate setMessage(String message) {
 		this.message = message;
 		return this;
 	}
 
 	/**
 	 * @param rate A custom text for the rate button.
-	 * @return This {@link AppRater} object to allow chaining.
+	 * @return This {@link AppRate} object to allow chaining.
 	 */
-	public AppRater setRateButtonText(String rate) {
+	public AppRate setRateButtonText(String rate) {
 		this.rate = rate;
 		return this;
 	}
 
 	/**
 	 * @param remindLater A custom text for the remind later button.
-	 * @return This {@link AppRater} object to allow chaining.
+	 * @return This {@link AppRate} object to allow chaining.
 	 */
-	public AppRater setRemindLaterButtonText(String remindLater) {
+	public AppRate setRemindLaterButtonText(String remindLater) {
 		this.remindLater = remindLater;
 		return this;
 	}
 
 	/**
 	 * @param dismiss A custom text for the dismiss button.
-	 * @return This {@link AppRater} object to allow chaining.
+	 * @return This {@link AppRate} object to allow chaining.
 	 */
-	public AppRater setDismissButtonText(String dismiss) {
+	public AppRate setDismissButtonText(String dismiss) {
 		this.dismiss = dismiss;
 		return this;
 	}
@@ -94,9 +94,9 @@ public class AppRater implements android.content.DialogInterface.OnClickListener
 	/**
 	 * @param minLaunchesUntilPrompt The minimum number of days before showing the rate dialog.<br/>
 	 *            Default value is 7 days.
-	 * @return This {@link AppRater} object to allow chaining.
+	 * @return This {@link AppRate} object to allow chaining.
 	 */
-	public AppRater setMinLaunchesUntilPrompt(long minLaunchesUntilPrompt) {
+	public AppRate setMinLaunchesUntilPrompt(long minLaunchesUntilPrompt) {
 		this.minLaunchesUntilPrompt = minLaunchesUntilPrompt;
 		return this;
 	}
@@ -104,9 +104,9 @@ public class AppRater implements android.content.DialogInterface.OnClickListener
 	/**
 	 * @param minDaysUntilPrompt The minimum number of times the user lunches the application before showing the rate dialog.<br/>
 	 *            Default value is 10 times.
-	 * @return This {@link AppRater} object to allow chaining.
+	 * @return This {@link AppRate} object to allow chaining.
 	 */
-	public AppRater setMinDaysUntilPrompt(long minDaysUntilPrompt) {
+	public AppRate setMinDaysUntilPrompt(long minDaysUntilPrompt) {
 		this.minDaysUntilPrompt = minDaysUntilPrompt;
 		return this;
 	}
