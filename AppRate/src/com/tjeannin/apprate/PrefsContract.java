@@ -1,6 +1,6 @@
 package com.tjeannin.apprate;
 
-public class AppRatePrefsContract {
+public class PrefsContract {
 
 	public static final String SHARED_PREFS_NAME = "apprate_prefs";
 
