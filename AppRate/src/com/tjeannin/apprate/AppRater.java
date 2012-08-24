@@ -18,12 +18,6 @@ public class AppRater implements android.content.DialogInterface.OnClickListener
 
 	private static final String TAG = "AppRater";
 
-	private static final String SHARED_PREFS_NAME = "apprate_prefs";
-
-	private static final String PREF_DATE_FIRST_LAUNCH = "date_firstlaunch";
-	private static final String PREF_LAUNCH_COUNT = "launch_count";
-	private static final String PREF_DONT_SHOW_AGAIN = "dont_show_again";
-
 	private Activity hostActivity;
 
 	private long minLaunchesUntilPrompt = 10;
@@ -38,9 +32,9 @@ public class AppRater implements android.content.DialogInterface.OnClickListener
 	private SharedPreferences preferences;
 
 	public AppRater(Activity hostActivity) {
-		
+
 		this.hostActivity = hostActivity;
-		preferences = hostActivity.getSharedPreferences(SHARED_PREFS_NAME, 0);
+		preferences = hostActivity.getSharedPreferences(PrefsContract.SHARED_PREFS_NAME, 0);
 
 		title = "Rate " + getApplicationName(hostActivity.getApplicationContext());
 		message = "If you enjoy using " + getApplicationName(hostActivity.getApplicationContext()) + ", please take a moment to rate it. Thanks for your support!";
@@ -119,10 +113,10 @@ public class AppRater implements android.content.DialogInterface.OnClickListener
 
 	/**
 	 * Reset all the data collected about number of launches and days until first launch.
-	 * @param A context.
+	 * @param context A context.
 	 */
 	public static void reset(Context context) {
-		context.getSharedPreferences(SHARED_PREFS_NAME, 0).edit().clear().commit();
+		context.getSharedPreferences(PrefsContract.SHARED_PREFS_NAME, 0).edit().clear().commit();
 		Log.d(TAG, "Cleared AppRate shared preferences.");
 	}
 
@@ -132,22 +126,22 @@ public class AppRater implements android.content.DialogInterface.OnClickListener
 	public void init() {
 
 		Log.d(TAG, "Init AppRate");
-		
-		if (preferences.getBoolean(PREF_DONT_SHOW_AGAIN, false)) {
+
+		if (preferences.getBoolean(PrefsContract.PREF_DONT_SHOW_AGAIN, false)) {
 			return;
 		}
 
 		Editor editor = preferences.edit();
 
 		// Get and increment launch counter.
-		long launch_count = preferences.getLong(PREF_LAUNCH_COUNT, 0) + 1;
-		editor.putLong(PREF_LAUNCH_COUNT, launch_count);
+		long launch_count = preferences.getLong(PrefsContract.PREF_LAUNCH_COUNT, 0) + 1;
+		editor.putLong(PrefsContract.PREF_LAUNCH_COUNT, launch_count);
 
 		// Get date of first launch.
-		Long date_firstLaunch = preferences.getLong(PREF_DATE_FIRST_LAUNCH, 0);
+		Long date_firstLaunch = preferences.getLong(PrefsContract.PREF_DATE_FIRST_LAUNCH, 0);
 		if (date_firstLaunch == 0) {
 			date_firstLaunch = System.currentTimeMillis();
-			editor.putLong(PREF_DATE_FIRST_LAUNCH, date_firstLaunch);
+			editor.putLong(PrefsContract.PREF_DATE_FIRST_LAUNCH, date_firstLaunch);
 		}
 
 		// Show the rate dialog if needed.
@@ -175,16 +169,16 @@ public class AppRater implements android.content.DialogInterface.OnClickListener
 		switch (which) {
 		case DialogInterface.BUTTON_POSITIVE:
 			hostActivity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + hostActivity.getPackageName())));
-			editor.putBoolean(PREF_DONT_SHOW_AGAIN, true);
+			editor.putBoolean(PrefsContract.PREF_DONT_SHOW_AGAIN, true);
 			break;
 
 		case DialogInterface.BUTTON_NEGATIVE:
-			editor.putBoolean(PREF_DONT_SHOW_AGAIN, true);
+			editor.putBoolean(PrefsContract.PREF_DONT_SHOW_AGAIN, true);
 			break;
 
 		case DialogInterface.BUTTON_NEUTRAL:
-			editor.putLong(PREF_DATE_FIRST_LAUNCH, System.currentTimeMillis());
-			editor.putLong(PREF_LAUNCH_COUNT, 0);
+			editor.putLong(PrefsContract.PREF_DATE_FIRST_LAUNCH, System.currentTimeMillis());
+			editor.putLong(PrefsContract.PREF_LAUNCH_COUNT, 0);
 			break;
 
 		default:
