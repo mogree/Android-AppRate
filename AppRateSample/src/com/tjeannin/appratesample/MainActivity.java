@@ -9,18 +9,19 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
-import com.tjeannin.apprate.AppRater;
+import com.tjeannin.apprate.AppRate;
 
 public class MainActivity extends Activity implements OnClickListener {
 
 	private static final String LUNCH_COUNT = "lunch_count";
 	private int lunchCount;
+	private SharedPreferences sharedPreferences;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+		sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 		lunchCount = sharedPreferences.getInt(LUNCH_COUNT, 0) + 1;
 		sharedPreferences.edit().putInt(LUNCH_COUNT, lunchCount).commit();
 
@@ -32,9 +33,10 @@ public class MainActivity extends Activity implements OnClickListener {
 		findViewById(R.id.reset_apprate_prefs).setOnClickListener(this);
 
 		// Init AppRater.
-		new AppRater(this)
+		new AppRate(this)
 				.setMinDaysUntilPrompt(0)
 				.setMinLaunchesUntilPrompt(5)
+				.setShowIfAppHasCrashed(false)
 				.init();
 	}
 
@@ -49,7 +51,9 @@ public class MainActivity extends Activity implements OnClickListener {
 			break;
 
 		case R.id.reset_apprate_prefs:
-			AppRater.reset(this);
+			AppRate.reset(this);
+			sharedPreferences.edit().putInt(LUNCH_COUNT, 0).commit();
+			((TextView) findViewById(R.id.lunch_count)).setText(String.valueOf(0));
 			break;
 
 		case R.id.force_crash:
