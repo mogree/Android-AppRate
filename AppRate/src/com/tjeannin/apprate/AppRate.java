@@ -1,5 +1,7 @@
 package com.tjeannin.apprate;
 
+import java.lang.Thread.UncaughtExceptionHandler;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -22,6 +24,8 @@ public class AppRate implements android.content.DialogInterface.OnClickListener 
 
 	private long minLaunchesUntilPrompt = 10;
 	private long minDaysUntilPrompt = 7;
+
+	private boolean showIfHasCrashed = true;
 
 	private String title;
 	private String message;
@@ -112,6 +116,16 @@ public class AppRate implements android.content.DialogInterface.OnClickListener 
 	}
 
 	/**
+	 * @param showIfCrash If <code>false</code> the rate dialog will not be shown if the application has crashed once.<br/>
+	 *            Default value is <code>false</code>.
+	 * @return
+	 */
+	public AppRate setShowIfAppHasCrashed(boolean showIfCrash) {
+		showIfHasCrashed = showIfCrash;
+		return this;
+	}
+
+	/**
 	 * Reset all the data collected about number of launches and days until first launch.
 	 * @param context A context.
 	 */
@@ -127,8 +141,13 @@ public class AppRate implements android.content.DialogInterface.OnClickListener 
 
 		Log.d(TAG, "Init AppRate");
 
-		if (preferences.getBoolean(PrefsContract.PREF_DONT_SHOW_AGAIN, false)) {
+		if (preferences.getBoolean(PrefsContract.PREF_DONT_SHOW_AGAIN, false) || (
+				preferences.getBoolean(PrefsContract.PREF_APP_HAS_CRASHED, false) && !showIfHasCrashed)) {
 			return;
+		}
+
+		if (!showIfHasCrashed) {
+			initExceptionHandler();
 		}
 
 		Editor editor = preferences.edit();
@@ -159,6 +178,23 @@ public class AppRate implements android.content.DialogInterface.OnClickListener 
 		}
 
 		editor.commit();
+	}
+
+	/**
+	 * Initialize the {@link ExceptionHandler}.
+	 */
+	private void initExceptionHandler() {
+
+		Log.d(TAG, "Init AppRate ExceptionHandler");
+
+		UncaughtExceptionHandler currentHandler = Thread.getDefaultUncaughtExceptionHandler();
+
+		// Don't register again if already registered.
+		if (!(currentHandler instanceof ExceptionHandler)) {
+
+			// Register default exceptions handler.
+			Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(currentHandler, hostActivity));
+		}
 	}
 
 	@Override
