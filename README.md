@@ -21,7 +21,7 @@ new AppRate(this).init();
 Features
 --------
 
-* You can decide not to prompt the user if the application has crashed once.
+* You can decide **not to prompt the user** if the application **has crashed once**.
 
 ```java
 new AppRate(this)
@@ -29,7 +29,7 @@ new AppRate(this)
     .init();
 ```
 
-* You can decide when to prompt the user.
+* You can decide **when to prompt the user**.
 
 ```java
 new AppRate(this)
@@ -38,7 +38,7 @@ new AppRate(this)
     .init();
 ```
 
-* You can customize all the messages and buttons of the rate dialog.
+* You can **customize** all the messages and buttons of **the rate dialog**.
 
 ```java
 AlertDialog.Builder builder = new AlertDialog.Builder(this)
