@@ -41,9 +41,15 @@ new AppRate(this)
 * You can customize all the messages and buttons of the rate dialog.
 
 ```java
+AlertDialog.Builder builder = new AlertDialog.Builder(this)
+		.setCustomTitle(myCustomTitleView)
+		.setIcon(R.drawable.my_custom_icon)
+		.setMessage("My custom message")
+		.setPositiveButton("My custom positive button", null)
+		.setNegativeButton("My custom negative button", null)
+		.setNeutralButton("My custom neutral button", null);
+
 new AppRate(this)
-    .setMessage("My custom message")
-    .setRateButtonText("My custom rate button text")
-    .setDismissButtonText(R.id.my_string)
-    .init();
+		.setCustomDialog(builder)
+		.init();
 ```
