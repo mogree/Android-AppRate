@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -16,7 +17,7 @@ import android.net.Uri;
 import android.text.format.DateUtils;
 import android.util.Log;
 
-public class AppRate implements android.content.DialogInterface.OnClickListener {
+public class AppRate implements android.content.DialogInterface.OnClickListener, OnCancelListener {
 
 	private static final String TAG = "AppRater";
 
@@ -169,6 +170,7 @@ public class AppRate implements android.content.DialogInterface.OnClickListener 
 				.setPositiveButton(rate, this)
 				.setNegativeButton(dismiss, this)
 				.setNeutralButton(remindLater, this)
+				.setOnCancelListener(this)
 				.create();
 	}
 
@@ -189,7 +191,18 @@ public class AppRate implements android.content.DialogInterface.OnClickListener 
 		dialog.setButton(AlertDialog.BUTTON_NEUTRAL, remindLater, this);
 		dialog.setButton(AlertDialog.BUTTON_NEGATIVE, dismiss, this);
 
+		dialog.setOnCancelListener(this);
+
 		return dialog;
+	}
+
+	@Override
+	public void onCancel(DialogInterface dialog) {
+
+		Editor editor = preferences.edit();
+		editor.putLong(PrefsContract.PREF_DATE_FIRST_LAUNCH, System.currentTimeMillis());
+		editor.putLong(PrefsContract.PREF_LAUNCH_COUNT, 0);
+		editor.commit();
 	}
 
 	@Override
