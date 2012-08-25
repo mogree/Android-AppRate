@@ -10,7 +10,6 @@ import android.view.View.OnClickListener;
 import android.widget.TextView;
 
 import com.tjeannin.apprate.AppRate;
-import com.tjeannin.apprate.sample.R;
 
 public class MainActivity extends Activity implements OnClickListener {
 
@@ -36,7 +35,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		// Init AppRater.
 		new AppRate(this)
 				.setMinDaysUntilPrompt(0)
-				.setMinLaunchesUntilPrompt(5)
+				.setMinLaunchesUntilPrompt(3)
 				.setShowIfAppHasCrashed(false)
 				.init();
 	}
