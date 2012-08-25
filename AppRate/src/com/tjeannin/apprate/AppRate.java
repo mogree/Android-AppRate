@@ -20,79 +20,18 @@ public class AppRate implements android.content.DialogInterface.OnClickListener 
 
 	private static final String TAG = "AppRater";
 
+	private SharedPreferences preferences;
 	private Activity hostActivity;
+	private AlertDialog.Builder dialogBuilder = null;
 
 	private long minLaunchesUntilPrompt = 10;
 	private long minDaysUntilPrompt = 7;
 
 	private boolean showIfHasCrashed = true;
 
-	private String title;
-	private String message;
-	private String rate;
-	private String remindLater;
-	private String dismiss;
-
-	private SharedPreferences preferences;
-
 	public AppRate(Activity hostActivity) {
-
 		this.hostActivity = hostActivity;
 		preferences = hostActivity.getSharedPreferences(PrefsContract.SHARED_PREFS_NAME, 0);
-
-		title = "Rate " + getApplicationName(hostActivity.getApplicationContext());
-		message = "If you enjoy using " + getApplicationName(hostActivity.getApplicationContext()) + ", please take a moment to rate it. Thanks for your support!";
-		rate = "Rate it !";
-		remindLater = "Remind me later";
-		dismiss = "No thanks";
-	}
-
-	/**
-	 * @param The title of the dialog to show.<br/>
-	 *            Default is build from the computed application name.
-	 * @return This {@link AppRate} object to allow chaining.
-	 */
-	public AppRate setTitle(String title) {
-		this.title = title;
-		return this;
-	}
-
-	/**
-	 * @param The message of the dialog to show.<br/>
-	 *            Default is build from the computed application name and looks like : <br/>
-	 *            If you enjoy using YOUR_APP_NAME, please take a moment to rate it. Thanks for your support!
-	 * @return This {@link AppRate} object to allow chaining.
-	 */
-	public AppRate setMessage(String message) {
-		this.message = message;
-		return this;
-	}
-
-	/**
-	 * @param rate A custom text for the rate button.
-	 * @return This {@link AppRate} object to allow chaining.
-	 */
-	public AppRate setRateButtonText(String rate) {
-		this.rate = rate;
-		return this;
-	}
-
-	/**
-	 * @param remindLater A custom text for the remind later button.
-	 * @return This {@link AppRate} object to allow chaining.
-	 */
-	public AppRate setRemindLaterButtonText(String remindLater) {
-		this.remindLater = remindLater;
-		return this;
-	}
-
-	/**
-	 * @param dismiss A custom text for the dismiss button.
-	 * @return This {@link AppRate} object to allow chaining.
-	 */
-	public AppRate setDismissButtonText(String dismiss) {
-		this.dismiss = dismiss;
-		return this;
 	}
 
 	/**
@@ -118,10 +57,26 @@ public class AppRate implements android.content.DialogInterface.OnClickListener 
 	/**
 	 * @param showIfCrash If <code>false</code> the rate dialog will not be shown if the application has crashed once.<br/>
 	 *            Default value is <code>false</code>.
-	 * @return
+	 * @return This {@link AppRate} object to allow chaining.
 	 */
 	public AppRate setShowIfAppHasCrashed(boolean showIfCrash) {
 		showIfHasCrashed = showIfCrash;
+		return this;
+	}
+
+	/**
+	 * Use this method if you want to customize the style and content of the rate dialog.<br/>
+	 * When using the {@link AlertDialog.Builder} you should use:
+	 * <ul>
+	 * <li>{@link AlertDialog.Builder#setPositiveButton} for the <b>rate</b> button.</li>
+	 * <li>{@link AlertDialog.Builder#setNeutralButton} for the <b>rate later</b> button.</li>
+	 * <li>{@link AlertDialog.Builder#setNegativeButton} for the <b>never rate</b> button.</li>
+	 * </ul>
+	 * @param customBuilder The custom dialog you want to use as the rate dialog.
+	 * @return This {@link AppRate} object to allow chaining.
+	 */
+	public AppRate setCustomDialog(AlertDialog.Builder customBuilder) {
+		dialogBuilder = customBuilder;
 		return this;
 	}
 
@@ -166,14 +121,12 @@ public class AppRate implements android.content.DialogInterface.OnClickListener 
 		// Show the rate dialog if needed.
 		if (launch_count >= minLaunchesUntilPrompt) {
 			if (System.currentTimeMillis() >= date_firstLaunch + (minDaysUntilPrompt * DateUtils.DAY_IN_MILLIS)) {
-				new AlertDialog.Builder(hostActivity)
-						.setTitle(title)
-						.setMessage(message)
-						.setPositiveButton(rate, this)
-						.setNegativeButton(dismiss, this)
-						.setNeutralButton(remindLater, this)
-						.create()
-						.show();
+
+				if (dialogBuilder != null) {
+					createDialog(dialogBuilder).show();
+				} else {
+					createDefaultDialog().show();
+				}
 			}
 		}
 
@@ -195,6 +148,48 @@ public class AppRate implements android.content.DialogInterface.OnClickListener 
 			// Register default exceptions handler.
 			Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(currentHandler, hostActivity));
 		}
+	}
+
+	/**
+	 * @return A default {@link AlertDialog}.
+	 */
+	private AlertDialog createDefaultDialog() {
+
+		Log.d(TAG, "Create default dialog.");
+
+		String title = "Rate " + getApplicationName(hostActivity.getApplicationContext());
+		String message = "If you enjoy using " + getApplicationName(hostActivity.getApplicationContext()) + ", please take a moment to rate it. Thanks for your support!";
+		String rate = "Rate it !";
+		String remindLater = "Remind me later";
+		String dismiss = "No thanks";
+
+		return new AlertDialog.Builder(hostActivity)
+				.setTitle(title)
+				.setMessage(message)
+				.setPositiveButton(rate, this)
+				.setNegativeButton(dismiss, this)
+				.setNeutralButton(remindLater, this)
+				.create();
+	}
+
+	/**
+	 * @return An {@link AlertDialog} created from the supplied custom {@link AlertDialog.Builder}.
+	 */
+	private AlertDialog createDialog(AlertDialog.Builder builder) {
+
+		Log.d(TAG, "Create custom dialog.");
+
+		AlertDialog dialog = builder.create();
+
+		String rate = (String) dialog.getButton(AlertDialog.BUTTON_POSITIVE).getText();
+		String remindLater = (String) dialog.getButton(AlertDialog.BUTTON_NEUTRAL).getText();
+		String dismiss = (String) dialog.getButton(AlertDialog.BUTTON_NEGATIVE).getText();
+
+		dialog.setButton(AlertDialog.BUTTON_POSITIVE, rate, this);
+		dialog.setButton(AlertDialog.BUTTON_NEUTRAL, remindLater, this);
+		dialog.setButton(AlertDialog.BUTTON_NEGATIVE, dismiss, this);
+
+		return dialog;
 	}
 
 	@Override
