@@ -124,9 +124,9 @@ public class AppRate implements android.content.DialogInterface.OnClickListener,
 			if (System.currentTimeMillis() >= date_firstLaunch + (minDaysUntilPrompt * DateUtils.DAY_IN_MILLIS)) {
 
 				if (dialogBuilder != null) {
-					createDialog(dialogBuilder).show();
+					showDialog(dialogBuilder);
 				} else {
-					createDefaultDialog().show();
+					showDefaultDialog();
 				}
 			}
 		}
@@ -152,9 +152,10 @@ public class AppRate implements android.content.DialogInterface.OnClickListener,
 	}
 
 	/**
-	 * @return A default {@link AlertDialog}.
+	 * Shows the default rate dialog.
+	 * @return
 	 */
-	private AlertDialog createDefaultDialog() {
+	private void showDefaultDialog() {
 
 		Log.d(TAG, "Create default dialog.");
 
@@ -164,24 +165,26 @@ public class AppRate implements android.content.DialogInterface.OnClickListener,
 		String remindLater = "Remind me later";
 		String dismiss = "No thanks";
 
-		return new AlertDialog.Builder(hostActivity)
+		new AlertDialog.Builder(hostActivity)
 				.setTitle(title)
 				.setMessage(message)
 				.setPositiveButton(rate, this)
 				.setNegativeButton(dismiss, this)
 				.setNeutralButton(remindLater, this)
 				.setOnCancelListener(this)
-				.create();
+				.create().show();
 	}
 
 	/**
-	 * @return An {@link AlertDialog} created from the supplied custom {@link AlertDialog.Builder}.
+	 * Show the custom rate dialog.
+	 * @return
 	 */
-	private AlertDialog createDialog(AlertDialog.Builder builder) {
+	private void showDialog(AlertDialog.Builder builder) {
 
 		Log.d(TAG, "Create custom dialog.");
 
 		AlertDialog dialog = builder.create();
+		dialog.show();
 
 		String rate = (String) dialog.getButton(AlertDialog.BUTTON_POSITIVE).getText();
 		String remindLater = (String) dialog.getButton(AlertDialog.BUTTON_NEUTRAL).getText();
@@ -192,8 +195,6 @@ public class AppRate implements android.content.DialogInterface.OnClickListener,
 		dialog.setButton(AlertDialog.BUTTON_NEGATIVE, dismiss, this);
 
 		dialog.setOnCancelListener(this);
-
-		return dialog;
 	}
 
 	@Override
