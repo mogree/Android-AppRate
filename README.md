@@ -53,3 +53,8 @@ new AppRate(this)
 		.setCustomDialog(builder)
 		.init();
 ```
+
+Screenshot
+----------
+
+![Screenshot](https://raw.github.com/TimotheeJeannin/AppRate/master/screen_shot.png "Screenshot")
