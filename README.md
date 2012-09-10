@@ -54,7 +54,8 @@ new AppRate(this)
 		.init();
 ```
 
-Screenshot
-----------
+Screenshots
+-----------
 
-![Screenshot](https://raw.github.com/TimotheeJeannin/AppRate/master/screen_shot.png "Screenshot")
+![Screenshot 1](https://raw.github.com/TimotheeJeannin/AppRate/master/Screenshots/screenshot_1.png "Screenshot 1")
+![Screenshot 2](https://raw.github.com/TimotheeJeannin/AppRate/master/Screenshots/screenshot_2.png "Screenshot 2")
