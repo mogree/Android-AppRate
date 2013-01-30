@@ -59,3 +59,8 @@ Screenshots
 
 ![Screenshot 1](https://raw.github.com/TimotheeJeannin/AppRate/master/AppRateScreenshots/screenshot_1.png "Screenshot 1")
 ![Screenshot 2](https://raw.github.com/TimotheeJeannin/AppRate/master/AppRateScreenshots/screenshot_2.png "Screenshot 2")
+
+License
+-------
+
+This content is released under the MIT License.
