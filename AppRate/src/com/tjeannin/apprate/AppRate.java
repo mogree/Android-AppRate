@@ -26,7 +26,7 @@ public class AppRate implements android.content.DialogInterface.OnClickListener,
 	private AlertDialog.Builder dialogBuilder = null;
 
 	private long minLaunchesUntilPrompt = 10;
-	private long minDaysUntilPrompt = 7;
+	private long minDaysUntilPrompt = 0;
 
 	private boolean showIfHasCrashed = true;
 
@@ -37,7 +37,7 @@ public class AppRate implements android.content.DialogInterface.OnClickListener,
 
 	/**
 	 * @param minLaunchesUntilPrompt The minimum number of days before showing the rate dialog.<br/>
-	 *            Default value is 7 days.
+	 *            Default value is 0 days.
 	 * @return This {@link AppRate} object to allow chaining.
 	 */
 	public AppRate setMinLaunchesUntilPrompt(long minLaunchesUntilPrompt) {
