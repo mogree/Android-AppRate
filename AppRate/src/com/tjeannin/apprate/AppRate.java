@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -21,14 +22,16 @@ public class AppRate implements android.content.DialogInterface.OnClickListener,
 
 	private static final String TAG = "AppRater";
 
-	private SharedPreferences preferences;
 	private Activity hostActivity;
+	private OnClickListener clickListener;
+	private SharedPreferences preferences;
 	private AlertDialog.Builder dialogBuilder = null;
 
 	private long minLaunchesUntilPrompt = 0;
 	private long minDaysUntilPrompt = 0;
 
 	private boolean showIfHasCrashed = true;
+
 
 	public AppRate(Activity hostActivity) {
 		this.hostActivity = hostActivity;
@@ -206,6 +209,15 @@ public class AppRate implements android.content.DialogInterface.OnClickListener,
 		editor.commit();
 	}
 
+	/**
+	 * @param onClickListener A listener to be called back on.
+	 * @return This {@link AppRate} object to allow chaining.
+	 */
+	public AppRate setOnClickListener(OnClickListener onClickListener){
+		clickListener = onClickListener;
+		return this;
+	}
+	
 	@Override
 	public void onClick(DialogInterface dialog, int which) {
 
@@ -232,6 +244,8 @@ public class AppRate implements android.content.DialogInterface.OnClickListener,
 
 		editor.commit();
 		dialog.dismiss();
+		
+		clickListener.onClick(dialog, which);
 	}
 
 	/**
