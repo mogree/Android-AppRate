@@ -245,7 +245,9 @@ public class AppRate implements android.content.DialogInterface.OnClickListener,
 		editor.commit();
 		dialog.dismiss();
 		
-		clickListener.onClick(dialog, which);
+		if(clickListener != null){
+			clickListener.onClick(dialog, which);
+		}
 	}
 
 	/**
