@@ -39,8 +39,8 @@ public class AppRate implements android.content.DialogInterface.OnClickListener,
 	}
 
 	/**
-	 * @param minLaunchesUntilPrompt The minimum number of days before showing the rate dialog.<br/>
-	 *            Default value is 0 days.
+	 * @param minLaunchesUntilPrompt The minimum number of times the user lunches the application before showing the rate dialog.<br/>
+	 *            Default value is 0 times.
 	 * @return This {@link AppRate} object to allow chaining.
 	 */
 	public AppRate setMinLaunchesUntilPrompt(long minLaunchesUntilPrompt) {
@@ -49,8 +49,8 @@ public class AppRate implements android.content.DialogInterface.OnClickListener,
 	}
 
 	/**
-	 * @param minDaysUntilPrompt The minimum number of times the user lunches the application before showing the rate dialog.<br/>
-	 *            Default value is 0 times.
+	 * @param minDaysUntilPrompt The minimum number of days before showing the rate dialog.<br/>
+	 *            Default value is 0 days.
 	 * @return This {@link AppRate} object to allow chaining.
 	 */
 	public AppRate setMinDaysUntilPrompt(long minDaysUntilPrompt) {
