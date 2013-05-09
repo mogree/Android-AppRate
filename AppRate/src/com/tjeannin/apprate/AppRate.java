@@ -4,6 +4,7 @@ import java.lang.Thread.UncaughtExceptionHandler;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
@@ -17,6 +18,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.text.format.DateUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 public class AppRate implements android.content.DialogInterface.OnClickListener, OnCancelListener {
 
@@ -225,7 +227,12 @@ public class AppRate implements android.content.DialogInterface.OnClickListener,
 
 		switch (which) {
 		case DialogInterface.BUTTON_POSITIVE:
-			hostActivity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + hostActivity.getPackageName())));
+			try
+			{
+				hostActivity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + hostActivity.getPackageName())));
+			}catch (ActivityNotFoundException e) {
+				Toast.makeText(hostActivity, "No Play Store installed on device", Toast.LENGTH_SHORT).show();
+			}
 			editor.putBoolean(PrefsContract.PREF_DONT_SHOW_AGAIN, true);
 			break;
 
