@@ -118,11 +118,11 @@ public class AppRate implements android.content.DialogInterface.OnClickListener,
         Editor editor = mPreferences.edit();
 
         // Get and increment launch counter.
-        long launch_count = mPreferences.getLong(PrefsContract.PREF_LAUNCH_COUNT, Context.MODE_PRIVATE) + 1;
+        long launch_count = mPreferences.getLong(PrefsContract.PREF_LAUNCH_COUNT, 0) + 1;
         editor.putLong(PrefsContract.PREF_LAUNCH_COUNT, launch_count);
 
         // Get date of first launch.
-        Long date_firstLaunch = mPreferences.getLong(PrefsContract.PREF_DATE_FIRST_LAUNCH, Context.MODE_PRIVATE);
+        Long date_firstLaunch = mPreferences.getLong(PrefsContract.PREF_DATE_FIRST_LAUNCH, 0);
         if (date_firstLaunch == 0) {
             date_firstLaunch = System.currentTimeMillis();
             editor.putLong(PrefsContract.PREF_DATE_FIRST_LAUNCH, date_firstLaunch);
@@ -208,7 +208,7 @@ public class AppRate implements android.content.DialogInterface.OnClickListener,
     public void onCancel(DialogInterface dialog) {
         Editor editor = mPreferences.edit();
         editor.putLong(PrefsContract.PREF_DATE_FIRST_LAUNCH, System.currentTimeMillis());
-        editor.putLong(PrefsContract.PREF_LAUNCH_COUNT, Context.MODE_PRIVATE);
+        editor.putLong(PrefsContract.PREF_LAUNCH_COUNT, 0);
         editor.commit();
     }
 
@@ -241,7 +241,7 @@ public class AppRate implements android.content.DialogInterface.OnClickListener,
 
             case DialogInterface.BUTTON_NEUTRAL:
                 editor.putLong(PrefsContract.PREF_DATE_FIRST_LAUNCH, System.currentTimeMillis());
-                editor.putLong(PrefsContract.PREF_LAUNCH_COUNT, Context.MODE_PRIVATE);
+                editor.putLong(PrefsContract.PREF_LAUNCH_COUNT, 0);
                 break;
 
             default:
@@ -265,7 +265,7 @@ public class AppRate implements android.content.DialogInterface.OnClickListener,
         ApplicationInfo applicationInfo;
 
         try {
-            applicationInfo = packageManager.getApplicationInfo(context.getPackageName(), Context.MODE_PRIVATE);
+            applicationInfo = packageManager.getApplicationInfo(context.getPackageName(), 0);
         } catch (final NameNotFoundException e) {
             applicationInfo = null;
         }
