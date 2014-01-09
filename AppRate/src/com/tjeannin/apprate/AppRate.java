@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
@@ -37,6 +38,8 @@ public class AppRate implements android.content.DialogInterface.OnClickListener,
     private long mMinDaysUntilPrompt = 0;
 
     private boolean mShowIfHasCrashed = true;
+
+    private boolean mResetOnAppUpgrade = false;
 
     public AppRate(Activity hostActivity) {
         mHostActivity = hostActivity;
@@ -74,6 +77,17 @@ public class AppRate implements android.content.DialogInterface.OnClickListener,
     }
 
     /**
+     * @param resetOnAppUpgrade If <code>true</code> the rate dialog tracking will be reset when the application is upgraded.
+     *                          This will allow the rate the application dialog to be shown again.
+     *                          Default value is <code>false</code>.
+     * @return This {@link AppRate} object to allow chaining.
+     */
+    public AppRate setResetOnAppUpgrade(boolean resetOnAppUpgrade) {
+        mResetOnAppUpgrade = resetOnAppUpgrade;
+        return this;
+    }
+
+    /**
      * Use this method if you want to customize the style and content of the rate dialog.<br/>
      * When using the {@link AlertDialog.Builder} you should use:
      * <ul>
@@ -106,6 +120,9 @@ public class AppRate implements android.content.DialogInterface.OnClickListener,
     public void init() {
         Log.d(TAG, "Init AppRate");
 
+        Editor editor = mPreferences.edit();
+        performAppUpgradeCheck(editor);
+
         if (mPreferences.getBoolean(PrefsContract.PREF_DONT_SHOW_AGAIN, false) || (
                 mPreferences.getBoolean(PrefsContract.PREF_APP_HAS_CRASHED, false) && !mShowIfHasCrashed)) {
             return;
@@ -114,8 +131,6 @@ public class AppRate implements android.content.DialogInterface.OnClickListener,
         if (!mShowIfHasCrashed) {
             initExceptionHandler();
         }
-
-        Editor editor = mPreferences.edit();
 
         // Get and increment launch counter.
         long launch_count = mPreferences.getLong(PrefsContract.PREF_LAUNCH_COUNT, 0) + 1;
@@ -140,6 +155,24 @@ public class AppRate implements android.content.DialogInterface.OnClickListener,
             }
         }
 
+        editor.commit();
+    }
+
+    /**
+     * Checks and saves off the current version information for the application. If the application has been upgraded, and configured to do so, then
+     * reset tracking information to allow the rate dialog to be shown again.
+     */
+    private void performAppUpgradeCheck(Editor editor) {
+        Integer currentAppVersionCode = AppRate.getApplicationVersionCode(mHostActivity.getApplicationContext());
+        Integer lastRunAppVersionCode = mPreferences.getInt(PrefsContract.PREF_APP_VERSION_CODE, -1);
+
+        // If the version has been initialized, we are being upgraded, and the user enabled resetting on upgrading
+        if (lastRunAppVersionCode != -1 && currentAppVersionCode > lastRunAppVersionCode && mResetOnAppUpgrade) {
+            AppRate.reset(mHostActivity);
+        }
+
+        // Save off the current app version code
+        editor.putInt(PrefsContract.PREF_APP_VERSION_CODE, currentAppVersionCode);
         editor.commit();
     }
 
@@ -271,5 +304,30 @@ public class AppRate implements android.content.DialogInterface.OnClickListener,
         }
 
         return (String) (applicationInfo != null ? packageManager.getApplicationLabel(applicationInfo) : context.getString(R.string.application_name_unknown));
+    }
+
+    /**
+     * Get the application version code
+     *
+     * @param context
+     * @return The version name or null if there was an error
+     */
+    private static final Integer getApplicationVersionCode(Context context) {
+        try {
+            if (context != null) {
+                PackageManager pm = context.getPackageManager();
+                if (pm != null) {
+                    PackageInfo pi = pm.getPackageInfo(context.getPackageName(), 0);
+                    if (pi != null) {
+                        return pi.versionCode;
+                    }
+                }
+            }
+
+        } catch (NameNotFoundException e) {
+            Log.e(TAG, "Unable to get application version code");
+        }
+
+        return 0;
     }
 }
