@@ -1,7 +1,5 @@
 package com.tjeannin.apprate;
 
-import java.lang.Thread.UncaughtExceptionHandler;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
@@ -20,255 +18,258 @@ import android.text.format.DateUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.lang.Thread.UncaughtExceptionHandler;
+
 public class AppRate implements android.content.DialogInterface.OnClickListener, OnCancelListener {
 
-	private static final String TAG = "AppRater";
+    private static final String TAG = "AppRater";
 
-	private Activity hostActivity;
-	private OnClickListener clickListener;
-	private SharedPreferences preferences;
-	private AlertDialog.Builder dialogBuilder = null;
+    private Activity mHostActivity;
 
-	private long minLaunchesUntilPrompt = 0;
-	private long minDaysUntilPrompt = 0;
+    private OnClickListener mClickListener;
 
-	private boolean showIfHasCrashed = true;
+    private SharedPreferences mPreferences;
 
+    private AlertDialog.Builder mDialogBuilder = null;
 
-	public AppRate(Activity hostActivity) {
-		this.hostActivity = hostActivity;
-		preferences = hostActivity.getSharedPreferences(PrefsContract.SHARED_PREFS_NAME, 0);
-	}
+    private long mMinLaunchesUntilPrompt = 0;
 
-	/**
-	 * @param minLaunchesUntilPrompt The minimum number of times the user lunches the application before showing the rate dialog.<br/>
-	 *            Default value is 0 times.
-	 * @return This {@link AppRate} object to allow chaining.
-	 */
-	public AppRate setMinLaunchesUntilPrompt(long minLaunchesUntilPrompt) {
-		this.minLaunchesUntilPrompt = minLaunchesUntilPrompt;
-		return this;
-	}
+    private long mMinDaysUntilPrompt = 0;
 
-	/**
-	 * @param minDaysUntilPrompt The minimum number of days before showing the rate dialog.<br/>
-	 *            Default value is 0 days.
-	 * @return This {@link AppRate} object to allow chaining.
-	 */
-	public AppRate setMinDaysUntilPrompt(long minDaysUntilPrompt) {
-		this.minDaysUntilPrompt = minDaysUntilPrompt;
-		return this;
-	}
+    private boolean mShowIfHasCrashed = true;
 
-	/**
-	 * @param showIfCrash If <code>false</code> the rate dialog will not be shown if the application has crashed once.<br/>
-	 *            Default value is <code>false</code>.
-	 * @return This {@link AppRate} object to allow chaining.
-	 */
-	public AppRate setShowIfAppHasCrashed(boolean showIfCrash) {
-		showIfHasCrashed = showIfCrash;
-		return this;
-	}
+    public AppRate(Activity hostActivity) {
+        mHostActivity = hostActivity;
+        mPreferences = hostActivity.getSharedPreferences(PrefsContract.SHARED_PREFS_NAME, Context.MODE_PRIVATE);
+    }
 
-	/**
-	 * Use this method if you want to customize the style and content of the rate dialog.<br/>
-	 * When using the {@link AlertDialog.Builder} you should use:
-	 * <ul>
-	 * <li>{@link AlertDialog.Builder#setPositiveButton} for the <b>rate</b> button.</li>
-	 * <li>{@link AlertDialog.Builder#setNeutralButton} for the <b>rate later</b> button.</li>
-	 * <li>{@link AlertDialog.Builder#setNegativeButton} for the <b>never rate</b> button.</li>
-	 * </ul>
-	 * @param customBuilder The custom dialog you want to use as the rate dialog.
-	 * @return This {@link AppRate} object to allow chaining.
-	 */
-	public AppRate setCustomDialog(AlertDialog.Builder customBuilder) {
-		dialogBuilder = customBuilder;
-		return this;
-	}
+    /**
+     * @param minLaunchesUntilPrompt The minimum number of times the user lunches the application before showing the rate dialog.<br/>
+     *                               Default value is 0 times.
+     * @return This {@link AppRate} object to allow chaining.
+     */
+    public AppRate setMinLaunchesUntilPrompt(long minLaunchesUntilPrompt) {
+        mMinLaunchesUntilPrompt = minLaunchesUntilPrompt;
+        return this;
+    }
 
-	/**
-	 * Reset all the data collected about number of launches and days until first launch.
-	 * @param context A context.
-	 */
-	public static void reset(Context context) {
-		context.getSharedPreferences(PrefsContract.SHARED_PREFS_NAME, 0).edit().clear().commit();
-		Log.d(TAG, "Cleared AppRate shared preferences.");
-	}
+    /**
+     * @param minDaysUntilPrompt The minimum number of days before showing the rate dialog.<br/>
+     *                           Default value is 0 days.
+     * @return This {@link AppRate} object to allow chaining.
+     */
+    public AppRate setMinDaysUntilPrompt(long minDaysUntilPrompt) {
+        mMinDaysUntilPrompt = minDaysUntilPrompt;
+        return this;
+    }
 
-	/**
-	 * Display the rate dialog if needed.
-	 */
-	public void init() {
+    /**
+     * @param showIfCrash If <code>false</code> the rate dialog will not be shown if the application has crashed once.<br/>
+     *                    Default value is <code>false</code>.
+     * @return This {@link AppRate} object to allow chaining.
+     */
+    public AppRate setShowIfAppHasCrashed(boolean showIfCrash) {
+        mShowIfHasCrashed = showIfCrash;
+        return this;
+    }
 
-		Log.d(TAG, "Init AppRate");
+    /**
+     * Use this method if you want to customize the style and content of the rate dialog.<br/>
+     * When using the {@link AlertDialog.Builder} you should use:
+     * <ul>
+     * <li>{@link AlertDialog.Builder#setPositiveButton} for the <b>rate</b> button.</li>
+     * <li>{@link AlertDialog.Builder#setNeutralButton} for the <b>rate later</b> button.</li>
+     * <li>{@link AlertDialog.Builder#setNegativeButton} for the <b>never rate</b> button.</li>
+     * </ul>
+     *
+     * @param customBuilder The custom dialog you want to use as the rate dialog.
+     * @return This {@link AppRate} object to allow chaining.
+     */
+    public AppRate setCustomDialog(AlertDialog.Builder customBuilder) {
+        mDialogBuilder = customBuilder;
+        return this;
+    }
 
-		if (preferences.getBoolean(PrefsContract.PREF_DONT_SHOW_AGAIN, false) || (
-				preferences.getBoolean(PrefsContract.PREF_APP_HAS_CRASHED, false) && !showIfHasCrashed)) {
-			return;
-		}
+    /**
+     * Reset all the data collected about number of launches and days until first launch.
+     *
+     * @param context A context.
+     */
+    public static void reset(Context context) {
+        context.getSharedPreferences(PrefsContract.SHARED_PREFS_NAME, Context.MODE_PRIVATE).edit().clear().commit();
+        Log.d(TAG, "Cleared AppRate shared preferences.");
+    }
 
-		if (!showIfHasCrashed) {
-			initExceptionHandler();
-		}
+    /**
+     * Display the rate dialog if needed.
+     */
+    public void init() {
+        Log.d(TAG, "Init AppRate");
 
-		Editor editor = preferences.edit();
+        if (mPreferences.getBoolean(PrefsContract.PREF_DONT_SHOW_AGAIN, false) || (
+                mPreferences.getBoolean(PrefsContract.PREF_APP_HAS_CRASHED, false) && !mShowIfHasCrashed)) {
+            return;
+        }
 
-		// Get and increment launch counter.
-		long launch_count = preferences.getLong(PrefsContract.PREF_LAUNCH_COUNT, 0) + 1;
-		editor.putLong(PrefsContract.PREF_LAUNCH_COUNT, launch_count);
+        if (!mShowIfHasCrashed) {
+            initExceptionHandler();
+        }
 
-		// Get date of first launch.
-		Long date_firstLaunch = preferences.getLong(PrefsContract.PREF_DATE_FIRST_LAUNCH, 0);
-		if (date_firstLaunch == 0) {
-			date_firstLaunch = System.currentTimeMillis();
-			editor.putLong(PrefsContract.PREF_DATE_FIRST_LAUNCH, date_firstLaunch);
-		}
+        Editor editor = mPreferences.edit();
 
-		// Show the rate dialog if needed.
-		if (launch_count >= minLaunchesUntilPrompt) {
-			if (System.currentTimeMillis() >= date_firstLaunch + (minDaysUntilPrompt * DateUtils.DAY_IN_MILLIS)) {
+        // Get and increment launch counter.
+        long launch_count = mPreferences.getLong(PrefsContract.PREF_LAUNCH_COUNT, Context.MODE_PRIVATE) + 1;
+        editor.putLong(PrefsContract.PREF_LAUNCH_COUNT, launch_count);
 
-				if (dialogBuilder != null) {
-					showDialog(dialogBuilder);
-				} else {
-					showDefaultDialog();
-				}
-			}
-		}
+        // Get date of first launch.
+        Long date_firstLaunch = mPreferences.getLong(PrefsContract.PREF_DATE_FIRST_LAUNCH, Context.MODE_PRIVATE);
+        if (date_firstLaunch == 0) {
+            date_firstLaunch = System.currentTimeMillis();
+            editor.putLong(PrefsContract.PREF_DATE_FIRST_LAUNCH, date_firstLaunch);
+        }
 
-		editor.commit();
-	}
+        // Show the rate dialog if needed.
+        if (launch_count >= mMinLaunchesUntilPrompt) {
+            if (System.currentTimeMillis() >= date_firstLaunch + (mMinDaysUntilPrompt * DateUtils.DAY_IN_MILLIS)) {
 
-	/**
-	 * Initialize the {@link ExceptionHandler}.
-	 */
-	private void initExceptionHandler() {
+                if (mDialogBuilder != null) {
+                    showDialog(mDialogBuilder);
+                } else {
+                    showDefaultDialog();
+                }
+            }
+        }
 
-		Log.d(TAG, "Init AppRate ExceptionHandler");
+        editor.commit();
+    }
 
-		UncaughtExceptionHandler currentHandler = Thread.getDefaultUncaughtExceptionHandler();
+    /**
+     * Initialize the {@link ExceptionHandler}.
+     */
+    private void initExceptionHandler() {
+        Log.d(TAG, "Init AppRate ExceptionHandler");
 
-		// Don't register again if already registered.
-		if (!(currentHandler instanceof ExceptionHandler)) {
+        UncaughtExceptionHandler currentHandler = Thread.getDefaultUncaughtExceptionHandler();
 
-			// Register default exceptions handler.
-			Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(currentHandler, hostActivity));
-		}
-	}
+        // Don't register again if already registered.
+        if (!(currentHandler instanceof ExceptionHandler)) {
+            // Register default exceptions handler.
+            Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(currentHandler, mHostActivity));
+        }
+    }
 
-	/**
-	 * Shows the default rate dialog.
-	 * @return
-	 */
-	private void showDefaultDialog() {
+    /**
+     * Shows the default rate dialog.
+     *
+     * @return
+     */
+    private void showDefaultDialog() {
+        Log.d(TAG, "Create default dialog.");
 
-		Log.d(TAG, "Create default dialog.");
+        String title = mHostActivity.getString(R.string.dialog_title, getApplicationName(mHostActivity.getApplicationContext()));
+        String message = mHostActivity.getString(R.string.dialog_message, getApplicationName(mHostActivity.getApplicationContext()));
+        String rate = mHostActivity.getString(R.string.dialog_positive_button);
+        String remindLater = mHostActivity.getString(R.string.dialog_neutral_button);
+        String dismiss = mHostActivity.getString(R.string.dialog_negative_button);
 
-		String title = "Rate " + getApplicationName(hostActivity.getApplicationContext());
-		String message = "If you enjoy using " + getApplicationName(hostActivity.getApplicationContext()) + ", please take a moment to rate it. Thanks for your support!";
-		String rate = "Rate it !";
-		String remindLater = "Remind me later";
-		String dismiss = "No thanks";
+        new AlertDialog.Builder(mHostActivity)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(rate, this)
+                .setNegativeButton(dismiss, this)
+                .setNeutralButton(remindLater, this)
+                .setOnCancelListener(this)
+                .create().show();
+    }
 
-		new AlertDialog.Builder(hostActivity)
-				.setTitle(title)
-				.setMessage(message)
-				.setPositiveButton(rate, this)
-				.setNegativeButton(dismiss, this)
-				.setNeutralButton(remindLater, this)
-				.setOnCancelListener(this)
-				.create().show();
-	}
+    /**
+     * Show the custom rate dialog.
+     *
+     * @return
+     */
+    private void showDialog(AlertDialog.Builder builder) {
+        Log.d(TAG, "Create custom dialog.");
 
-	/**
-	 * Show the custom rate dialog.
-	 * @return
-	 */
-	private void showDialog(AlertDialog.Builder builder) {
+        AlertDialog dialog = builder.create();
+        dialog.show();
 
-		Log.d(TAG, "Create custom dialog.");
+        String rate = (String) dialog.getButton(AlertDialog.BUTTON_POSITIVE).getText();
+        String remindLater = (String) dialog.getButton(AlertDialog.BUTTON_NEUTRAL).getText();
+        String dismiss = (String) dialog.getButton(AlertDialog.BUTTON_NEGATIVE).getText();
 
-		AlertDialog dialog = builder.create();
-		dialog.show();
+        dialog.setButton(AlertDialog.BUTTON_POSITIVE, rate, this);
+        dialog.setButton(AlertDialog.BUTTON_NEUTRAL, remindLater, this);
+        dialog.setButton(AlertDialog.BUTTON_NEGATIVE, dismiss, this);
 
-		String rate = (String) dialog.getButton(AlertDialog.BUTTON_POSITIVE).getText();
-		String remindLater = (String) dialog.getButton(AlertDialog.BUTTON_NEUTRAL).getText();
-		String dismiss = (String) dialog.getButton(AlertDialog.BUTTON_NEGATIVE).getText();
+        dialog.setOnCancelListener(this);
+    }
 
-		dialog.setButton(AlertDialog.BUTTON_POSITIVE, rate, this);
-		dialog.setButton(AlertDialog.BUTTON_NEUTRAL, remindLater, this);
-		dialog.setButton(AlertDialog.BUTTON_NEGATIVE, dismiss, this);
+    @Override
+    public void onCancel(DialogInterface dialog) {
+        Editor editor = mPreferences.edit();
+        editor.putLong(PrefsContract.PREF_DATE_FIRST_LAUNCH, System.currentTimeMillis());
+        editor.putLong(PrefsContract.PREF_LAUNCH_COUNT, Context.MODE_PRIVATE);
+        editor.commit();
+    }
 
-		dialog.setOnCancelListener(this);
-	}
+    /**
+     * @param onClickListener A listener to be called back on.
+     * @return This {@link AppRate} object to allow chaining.
+     */
+    public AppRate setOnClickListener(OnClickListener onClickListener) {
+        mClickListener = onClickListener;
+        return this;
+    }
 
-	@Override
-	public void onCancel(DialogInterface dialog) {
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
+        Editor editor = mPreferences.edit();
 
-		Editor editor = preferences.edit();
-		editor.putLong(PrefsContract.PREF_DATE_FIRST_LAUNCH, System.currentTimeMillis());
-		editor.putLong(PrefsContract.PREF_LAUNCH_COUNT, 0);
-		editor.commit();
-	}
+        switch (which) {
+            case DialogInterface.BUTTON_POSITIVE:
+                try {
+                    mHostActivity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + mHostActivity.getPackageName())));
+                } catch (ActivityNotFoundException e) {
+                    Toast.makeText(mHostActivity, mHostActivity.getString(R.string.toast_play_store_missing_error), Toast.LENGTH_SHORT).show();
+                }
+                editor.putBoolean(PrefsContract.PREF_DONT_SHOW_AGAIN, true);
+                break;
 
-	/**
-	 * @param onClickListener A listener to be called back on.
-	 * @return This {@link AppRate} object to allow chaining.
-	 */
-	public AppRate setOnClickListener(OnClickListener onClickListener){
-		clickListener = onClickListener;
-		return this;
-	}
-	
-	@Override
-	public void onClick(DialogInterface dialog, int which) {
+            case DialogInterface.BUTTON_NEGATIVE:
+                editor.putBoolean(PrefsContract.PREF_DONT_SHOW_AGAIN, true);
+                break;
 
-		Editor editor = preferences.edit();
+            case DialogInterface.BUTTON_NEUTRAL:
+                editor.putLong(PrefsContract.PREF_DATE_FIRST_LAUNCH, System.currentTimeMillis());
+                editor.putLong(PrefsContract.PREF_LAUNCH_COUNT, Context.MODE_PRIVATE);
+                break;
 
-		switch (which) {
-		case DialogInterface.BUTTON_POSITIVE:
-			try
-			{
-				hostActivity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + hostActivity.getPackageName())));
-			}catch (ActivityNotFoundException e) {
-				Toast.makeText(hostActivity, "No Play Store installed on device", Toast.LENGTH_SHORT).show();
-			}
-			editor.putBoolean(PrefsContract.PREF_DONT_SHOW_AGAIN, true);
-			break;
+            default:
+                break;
+        }
 
-		case DialogInterface.BUTTON_NEGATIVE:
-			editor.putBoolean(PrefsContract.PREF_DONT_SHOW_AGAIN, true);
-			break;
+        editor.commit();
+        dialog.dismiss();
 
-		case DialogInterface.BUTTON_NEUTRAL:
-			editor.putLong(PrefsContract.PREF_DATE_FIRST_LAUNCH, System.currentTimeMillis());
-			editor.putLong(PrefsContract.PREF_LAUNCH_COUNT, 0);
-			break;
+        if (mClickListener != null) {
+            mClickListener.onClick(dialog, which);
+        }
+    }
 
-		default:
-			break;
-		}
+    /**
+     * @param context A context of the current application.
+     * @return The application name of the current application.
+     */
+    private static final String getApplicationName(Context context) {
+        final PackageManager packageManager = context.getPackageManager();
+        ApplicationInfo applicationInfo;
 
-		editor.commit();
-		dialog.dismiss();
-		
-		if(clickListener != null){
-			clickListener.onClick(dialog, which);
-		}
-	}
+        try {
+            applicationInfo = packageManager.getApplicationInfo(context.getPackageName(), Context.MODE_PRIVATE);
+        } catch (final NameNotFoundException e) {
+            applicationInfo = null;
+        }
 
-	/**
-	 * @param context A context of the current application.
-	 * @return The application name of the current application.
-	 */
-	private static final String getApplicationName(Context context) {
-		final PackageManager packageManager = context.getPackageManager();
-		ApplicationInfo applicationInfo;
-		try {
-			applicationInfo = packageManager.getApplicationInfo(context.getPackageName(), 0);
-		} catch (final NameNotFoundException e) {
-			applicationInfo = null;
-		}
-		return (String) (applicationInfo != null ? packageManager.getApplicationLabel(applicationInfo) : "(unknown)");
-	}
+        return (String) (applicationInfo != null ? packageManager.getApplicationLabel(applicationInfo) : context.getString(R.string.application_name_unknown));
+    }
 }
