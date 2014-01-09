@@ -65,7 +65,7 @@ public class AppRate implements android.content.DialogInterface.OnClickListener,
 
     /**
      * @param showIfCrash If <code>false</code> the rate dialog will not be shown if the application has crashed once.<br/>
-     *                    Default value is <code>false</code>.
+     *                    Default value is <code>true</code>.
      * @return This {@link AppRate} object to allow chaining.
      */
     public AppRate setShowIfAppHasCrashed(boolean showIfCrash) {
