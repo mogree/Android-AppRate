@@ -7,6 +7,18 @@ AppRate
 
 * If enabled, then the user will first be asked if they like the application prior to asking them to rate it. If they respond that they don't like the application they will be prompted to leave email feedback. Both of these dialogs can be customized. 
 
+Screenshots
+-----------
+![DoYouLikeApp Dark](AppRateScreenshots/screenshot_doyoulikeapp_dark.png "Do you like the app (dark)")
+![DoYouLikeApp Light](AppRateScreenshots/screenshot_doyoulikeapp_light.png "Do you like the app (light)")
+
+![Screenshot 1](AppRateScreenshots/screenshot_1.png "Screenshot 1")
+![Screenshot 2](AppRateScreenshots/screenshot_2.png "Screenshot 2")
+
+![Send Feedback Dark](AppRateScreenshots/screenshot_sendfeedback_dark.png "Send Feedback (dark)")
+![Send Feedback Light](AppRateScreenshots/screenshot_sendfeedback_light.png "Send Feedback (light)")
+
+
 How to install and use
 ----------------------
 
@@ -63,6 +75,7 @@ new AppRate(this)
 	.showDoYouLikeTheAppFlow("support@your_support_email_address.com")
 	.setSendFeedbackSubject("Subject")
 	.init();
+```
 
 * You can **customize** the send feedback **email body**.
 
@@ -185,17 +198,6 @@ new AppRate(this)
 	})
 	.init();
 ```
-
-Screenshots
------------
-![DoYouLikeApp Dark](AppRateScreenshots/screenshot_doyoulikeapp_dark.png "Do you like the app (dark)")
-![DoYouLikeApp Light](AppRateScreenshots/screenshot_doyoulikeapp_light.png "Do you like the app (light)")
-
-![Screenshot 1](AppRateScreenshots/screenshot_1.png "Screenshot 1")
-![Screenshot 2](AppRateScreenshots/screenshot_2.png "Screenshot 2")
-
-![Send Feedback Dark](AppRateScreenshots/screenshot_sendfeedback_dark.png "Send Feedback (dark)")
-![Send Feedback Light](AppRateScreenshots/screenshot_sendfeedback_light.png "Send Feedback (light)")
 
 License
 -------
