@@ -54,6 +54,8 @@ public class AppRate {
 
     private String mSendFeedbackBody;
 
+    private AppRaterEventListener mAppRaterEventListener;
+
     public AppRate(Activity hostActivity) {
         mHostActivity = hostActivity;
         mPreferences = hostActivity.getSharedPreferences(PrefsContract.SHARED_PREFS_NAME, Context.MODE_PRIVATE);
@@ -237,6 +239,11 @@ public class AppRate {
                     showDoYouLikeAppDialog();
                 } else {
                     showDialog();
+                }
+
+                // Notify listener that we have shown a dialog starting the flow
+                if (mAppRaterEventListener != null) {
+                    mAppRaterEventListener.onAppRaterDialogsShown();
                 }
             }
         }
@@ -470,6 +477,19 @@ public class AppRate {
      */
     public AppRate setSendFeedbackOnClickListener(OnClickListener onClickListener) {
         mSendFeedbackClickListener = onClickListener;
+        return this;
+    }
+
+    public interface AppRaterEventListener {
+        public void onAppRaterDialogsShown();
+    }
+
+    /**
+     * @param appRaterEventListener listener to be called back when the app rater launches its first dialog to begin a flow.
+     * @return This {@link AppRate} object to allow chaining.
+     */
+    public AppRate setAppRaterEventListener(AppRaterEventListener appRaterEventListener) {
+        mAppRaterEventListener = appRaterEventListener;
         return this;
     }
 
