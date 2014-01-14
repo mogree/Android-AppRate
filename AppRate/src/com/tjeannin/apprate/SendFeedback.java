@@ -31,9 +31,9 @@ public class SendFeedback {
         defaultBodyText.append("------------------------------------\n\n");
         defaultBodyText.append(mActivity.getString(R.string.feedback_email_header));
         defaultBodyText.append("\n\n");
-        defaultBodyText.append("\nAndroid Device: " + getDeviceName());
-        defaultBodyText.append("\nAndroid Version: " + Build.VERSION.RELEASE);
-        defaultBodyText.append("\nApp Version: " + AppInfo.getApplicationVersionName(mActivity));
+        defaultBodyText.append("\n" + mActivity.getString(R.string.email_heading_android_device, getDeviceName()));
+        defaultBodyText.append("\n" + mActivity.getString(R.string.email_heading_android_version, Build.VERSION.RELEASE));
+        defaultBodyText.append("\n" + mActivity.getString(R.string.email_heading_app_version, AppInfo.getApplicationVersionName(mActivity)));
 
         String defaultSubjectText = mActivity.getString(R.string.feedback_email_subject_line, AppInfo.getApplicationName(mActivity));
 

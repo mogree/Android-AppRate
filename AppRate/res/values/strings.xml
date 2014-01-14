@@ -19,5 +19,8 @@
     <string name="feedback_email_subject_line">"%1$s Feedback"</string>
     <string name="feedback_email_header">Please enter your feedback above this line</string>
     <string name="send_email">Send Email&#8230;</string>
+    <string name="email_heading_android_device">Android Device: %s</string>
+    <string name="email_heading_android_version">Android Version: %s</string>
+    <string name="email_heading_app_version">App Version: %s</string>
 
 </resources>
